@@ -17,4 +17,4 @@ currently CACHED for 30 minutes
 /loans/big		active loans from BIG guys
 
 USER RECEIVABLES CALENDAR
-http://blcapi.noapi.cloudbees.net/calendar.html?userId=1054
+<a href="http://blcapi.noapi.cloudbees.net/calendar.html?userId=1054">link</a>
