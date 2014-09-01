@@ -1,0 +1,6 @@
+{
+	"userName" : ".user-name",
+	"country" : ".country",
+	"reputation" : "div.sidebar-section:nth-child(4) > ul:nth-child(2) > li:nth-child(5) > span:nth-child(2)",
+	"memberSince" : ".static > tbody:nth-child(1) > tr:nth-child(1) > td:nth-child(2)"
+}
