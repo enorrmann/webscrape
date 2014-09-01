@@ -11,7 +11,7 @@ public class LoanAdapter extends GenericAdapter {
 	public final static String LOAN_PATH = "/loans";
 	final String PAYMENTS_PATH = "/payments";
 	final String COMMENTS_PATH = "/comments";
-	final String SITE_LOAN_PATH = "/loan/browse/lid/";
+	public final static String SITE_LOAN_PATH = "/loan/browse/lid/";
 
 	public LoanAdapter(String url, Document doc, Map<String, Object> adapterMap) {
 		super(url, doc, adapterMap);

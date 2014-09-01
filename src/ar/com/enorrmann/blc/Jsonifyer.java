@@ -20,6 +20,7 @@ public class Jsonifyer extends HttpServlet {
 	final String INVESTMENTS_PATH = "/investments";
 	final String RATINGS_PATH = "/ratings";
 	final String RECEIVABLES_PATH = "/receivables";
+	final String BIG_PATH = "/big";
 
 	public Jsonifyer() {
 		super();
@@ -81,15 +82,22 @@ public class Jsonifyer extends HttpServlet {
 		String loanId = extractFirstNumber(requestUrl, LOANS_PATH);
 
 		if (urlContainsPath(requestUrl, INVESTMENTS_PATH)) {
-			
 			String json = logic.getLoanInvestments(asLong(loanId)).toString();
 			out.println(JsonWriter.formatJson(json));
 		}else if (urlContainsPath(requestUrl, PAYMENTS_PATH)) {
 			String json = logic.getLoanPayments(asLong(loanId)).toString();
 			out.println(JsonWriter.formatJson(json));
-		} else {
-			String json = logic.getLoan(asLong(loanId)).toString();
+		}else if (urlContainsPath(requestUrl, BIG_PATH)) {
+			String json = logic.getBigLoans().toString();
 			out.println(JsonWriter.formatJson(json));
+		} else {
+			if (asLong(loanId)!=null){
+				String json = logic.getLoan(asLong(loanId)).toString();
+				out.println(JsonWriter.formatJson(json));
+			} else {
+				String json = logic.getLoansAll().toString();
+				out.println(JsonWriter.formatJson(json));
+			}
 		}
 	}
 

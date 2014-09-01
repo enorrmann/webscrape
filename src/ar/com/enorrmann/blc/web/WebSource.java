@@ -11,7 +11,7 @@ import java.net.URL;
 
 public class WebSource extends Thread {
 
-	final boolean USE_PROXY = false;
+	final boolean USE_PROXY = true;
 	private String sourceCode;
 	private String url;
 	

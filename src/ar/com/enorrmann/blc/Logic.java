@@ -15,6 +15,7 @@ import ar.com.enorrmann.blc.adapter.GenericDTO;
 import ar.com.enorrmann.blc.adapter.HtmlAdapter;
 import ar.com.enorrmann.blc.adapter.LoanAdapter;
 import ar.com.enorrmann.blc.adapter.LoanInvestmentsAdapter;
+import ar.com.enorrmann.blc.adapter.LoanPageAdapter;
 import ar.com.enorrmann.blc.adapter.LoanPaymentsAdapter;
 import ar.com.enorrmann.blc.adapter.UserAdapter;
 import ar.com.enorrmann.blc.adapter.UserInvestmentsAdapter;
@@ -24,9 +25,12 @@ import ar.com.enorrmann.blc.web.WebSource;
 import com.cedarsoftware.util.io.JsonReader;
 
 public class Logic {
-
-	public static final String BLC_BASE_URL = "https://bitlendingclub.com";
-
+	
+	private Map<String,String> bigBoysMap;
+	
+	public Logic(){
+		bigBoysMap = getConversionMap("ar/com/enorrmann/blc/adapter/BigBoys.json"); 
+	}
 	public List<GenericDTO> getPayments(List<GenericDTO> loans) {
 		List<GenericDTO> payments = new ArrayList<GenericDTO>();
 		for (GenericDTO aLoan : loans) {
@@ -37,6 +41,12 @@ public class Logic {
 
 	public GenericDTO getInvestmentPage(Document doc) {
 		HtmlAdapter adapter = new UserInvestmentsAdapter("", doc);
+		GenericDTO page1 = adapter.getGenericDto();
+		return page1;
+	}
+
+	public GenericDTO getLoansPage(Document doc) {
+		HtmlAdapter adapter = new LoanPageAdapter("", doc);
 		GenericDTO page1 = adapter.getGenericDto();
 		return page1;
 	}
@@ -79,7 +89,7 @@ public class Logic {
 		dtoList = (List<GenericDTO>)page1.get("investments");
 		
 		List<String> links = new ArrayList<String>();		
-		for (int i=2;i<pageCount;i++){
+		for (int i=2;i<=pageCount;i++){
 			links.add(baseUrl + i);
 		}
 		List<Document> docs = getDocFromUrl(links.toArray(new String[0]));
@@ -89,7 +99,50 @@ public class Logic {
 		return dtoList;
 
 	}
+	
+	public List<GenericDTO> getBigLoans() {
+		List<GenericDTO> loans = getLoansAll();
+		keepBig(loans);
+		return loans;
+	}
+	private void keepBig(List<GenericDTO> loans) {
+		Iterator <GenericDTO> it = loans.iterator();
+		while (it.hasNext()){
+			GenericDTO aLoan = it.next();
+			String user = (String)aLoan.get("user");
+			if (!bigBoysMap.containsKey(user)){
+				it.remove();
+			}
+		}
+		
+	}
+	public List<GenericDTO> getLoansAll() {
+		List<GenericDTO> dtoList = new ArrayList<GenericDTO>();
+		int pageNumber = 1;
+		final String baseUrl = "https://bitlendingclub.com/loan/index/page/";
+		
+		String page1Url = baseUrl + pageNumber;
+		Document doc = getDocFromUrl(page1Url);
 
+		HtmlAdapter adapter = new LoanPageAdapter(page1Url, doc);
+		GenericDTO page1 = adapter.getGenericDto();
+		page1.add("pageNumber", pageNumber);
+		dtoList.add(page1);
+		
+		int pageCount = (Integer) page1.get("pageCount");
+		dtoList = (List<GenericDTO>)page1.get("loans");
+		
+		List<String> links = new ArrayList<String>();		
+		for (int i=2;i<=pageCount;i++){
+			links.add(baseUrl + i);
+		}
+		List<Document> docs = getDocFromUrl(links.toArray(new String[0]));
+		for (Document aDocument:docs){
+			dtoList.addAll((List<GenericDTO>)getLoansPage(aDocument).get("loans"));
+		}
+		return dtoList;
+
+	}
 	public GenericDTO getUserLoans(Long userId, Long pageNum) {
 		if (userId == null) {
 			return getErrorDto("user id required");
@@ -156,11 +209,8 @@ public class Logic {
 		}
 		final String url = "https://bitlendingclub.com/loan/browse/lid/" + loanId;
 		Document doc = getDocFromUrl(url);
-		
-		InputStream is = getClass().getClassLoader().getResourceAsStream("ar/com/enorrmann/blc/adapter/LoanAdapter.json");
-		JsonReader jr = new JsonReader(is, true);
-		Map map = (Map) jr.readObject();
 
+		Map map = getConversionMap("ar/com/enorrmann/blc/adapter/LoanAdapter.json");
 		HtmlAdapter adapter = new LoanAdapter(url, doc,map);
 		GenericDTO loanDto = adapter.getGenericDto();
 
@@ -222,7 +272,7 @@ public class Logic {
 	public List<GenericDTO> getLoanPayments(List<GenericDTO> loans) {
 		List<String> links = new ArrayList<String>();		
 		for (GenericDTO aLoan:loans){
-			links.add(BLC_BASE_URL + aLoan.get("url"));
+			links.add(HtmlAdapter.BLC_BASE_URL + aLoan.get("url"));
 		}
 		List<Document> docs = getDocFromUrl(links.toArray(new String[0]));
 		List<GenericDTO> payments = new ArrayList<GenericDTO>(); 
@@ -260,9 +310,7 @@ public class Logic {
 		}
 		final String url = "https://bitlendingclub.com/user/index/id/" + userId;
 
-		InputStream is = getClass().getClassLoader().getResourceAsStream("ar/com/enorrmann/blc/adapter/UserAdapter.json");
-		JsonReader jr = new JsonReader(is, true);
-		Map map = (Map) jr.readObject();
+		Map map = getConversionMap("ar/com/enorrmann/blc/adapter/UserAdapter.json");
 
 
 		Document doc = getDocFromUrl(url);
@@ -287,5 +335,17 @@ public class Logic {
 		apiDto.add("links", links);
 
 		return apiDto;
+	}
+	
+	private Map getConversionMap(String file){
+		InputStream is = getClass().getClassLoader().getResourceAsStream(file);
+		JsonReader jr = new JsonReader(is, true);
+		try {
+			return (Map) jr.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 }

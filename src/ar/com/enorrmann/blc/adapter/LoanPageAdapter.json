@@ -1,0 +1,7 @@
+{
+	"user" : "#listing-table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(1) > a:nth-child(1) > span:nth-child(2)",
+	"title" : "#listing-table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2) > a:nth-child(1)",
+	"type" : "#listing-table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)",
+	"amount" : "#listing-table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(2) > strong:nth-child(2)"
+	
+}

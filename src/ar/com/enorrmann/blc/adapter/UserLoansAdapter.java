@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 public class UserLoansAdapter extends HtmlAdapter {
 
 	final static String INVESTMENTS_PATH = "/investments";
-	final String SITE_INVESTMENTS_PATH = "/loan/browse/lid/";
+	public static final String SITE_INVESTMENTS_PATH = "/loan/browse/lid/";
 	
 	public UserLoansAdapter(String url, Document doc) {
 //		unGenericDTO.add("url", url);
