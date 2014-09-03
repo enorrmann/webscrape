@@ -7,15 +7,21 @@ public class BlcCalculator {
 
 	private final static BigDecimal ONE = new BigDecimal(1); 
 	public static void main(String[] args) {
-		BigDecimal rate = new BigDecimal(0.01);
-		int numPayments = 3 ;
-		BigDecimal investedAmount = new BigDecimal(5);
-		BigDecimal payment = getPaymentAmount(investedAmount,rate,numPayments);
+		String investedAmount = "0.10000000";
+		String rate = "12.00000%";
+		int numPayments = 3;
+		String payment = getEachPaymentAmount(investedAmount,rate,numPayments);
 		System.out.println(payment);
 
 	}
-	
-	public static BigDecimal getPaymentAmount(BigDecimal investedAmount, BigDecimal rate, int numPayments){
+	public static String getEachPaymentAmount(String investedAmountStr, String rateStr, int numPayments){
+		BigDecimal investedAmount = new BigDecimal(investedAmountStr);
+		BigDecimal rate = new BigDecimal(rateStr.replace("%", ""));
+		rate = rate.divide(new BigDecimal(100));
+		return getPaymentAmount(investedAmount,rate,numPayments).toString().substring(0,10);
+		
+	}
+	private static BigDecimal getPaymentAmount(BigDecimal investedAmount, BigDecimal rate, int numPayments){
 		BigDecimal subPeriodicRate = rate.divide(new BigDecimal(numPayments), 10, RoundingMode.HALF_DOWN);
 		BigDecimal dividend = investedAmount.multiply(subPeriodicRate);
 		BigDecimal divisor2 = exp(subPeriodicRate.add(ONE),numPayments);
