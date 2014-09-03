@@ -18,7 +18,7 @@ public class LoanInvestmentsAdapter extends HtmlAdapter {
 		Element investmentsTable = doc
 				.select("div.profile-content-right:nth-child(8) > table:nth-child(2) > tbody:nth-child(2)")
 				.first();
-		if (investmentsTable==null)return ;
+		if (investmentsTable==null)return ; 
 		Elements rows = investmentsTable.getElementsByTag("tr"); 
 		List<GenericDTO> investments = getInvestments(rows);
 		genericDto.add("investments", investments);
@@ -31,6 +31,12 @@ public class LoanInvestmentsAdapter extends HtmlAdapter {
 			GenericDTO unGenericDTO = new GenericDTO();
 			Elements cells = aRow.getElementsByTag("td"); 
 			unGenericDTO.add("user", cells.get(0).text()); 
+
+			Elements userLink = cells.get(0).getElementsByTag("a");
+			String userUrl = userLink.attr("href");
+			String userId = extractFirstNumber(userUrl,UserAdapter.USER_PATH);
+			unGenericDTO.add("userId", userId); 
+
 			//unGenericDTO.add("1", cells.get(1).text()); titulo repetido 
 			unGenericDTO.add("amount", cells.get(2).text()); 
 			unGenericDTO.add("rate", cells.get(3).text()); 
@@ -48,9 +54,4 @@ public class LoanInvestmentsAdapter extends HtmlAdapter {
 		return self;
 
 	}
-
-	public GenericDTO getGenericDto(String url) {
-		return null;
-	}
-
 }

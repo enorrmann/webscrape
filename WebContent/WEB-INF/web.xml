@@ -16,8 +16,6 @@
     <filter-class>net.sf.ehcache.constructs.web.filter.SimplePageCachingFilter
     </filter-class>
   </filter>
-
-  
   <filter-mapping>
     <filter-name>SimplePageCachingFilter</filter-name>
     <url-pattern>/api/*</url-pattern>

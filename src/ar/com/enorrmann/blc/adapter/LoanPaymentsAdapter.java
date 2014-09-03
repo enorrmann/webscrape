@@ -16,16 +16,17 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 
 		genericDto.add("url", url);
 
-		Element paymentsTable = doc
-				.select("table.text-center > tbody:nth-child(3)")
-				.first();
+		Element paymentsTable = doc.select("table.text-center > tbody:nth-child(3)").first();
 		if (paymentsTable==null)return ;
 		Elements rows = paymentsTable.getElementsByTag("tr"); 
-		List<GenericDTO> investments = getInvestments(rows,doc.baseUri());
-		genericDto.add("payments", investments);
+		GenericDTO investmentDto = getInvestmentDto(doc,"1054");
+
+		List<GenericDTO> payments = getPayments(rows,doc.baseUri(),investmentDto);
+		genericDto.add("payments", payments);
 
 	}
-	private List<GenericDTO> getInvestments(Elements rows,String baseUri) {
+
+	private List<GenericDTO> getPayments(Elements rows,String baseUri,GenericDTO investmentDto) {
 		List<GenericDTO> investList = new ArrayList<GenericDTO>();
 		// last value is just a sum
 		for (int i=0;i<rows.size()-1;i++){
@@ -34,12 +35,17 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 			Elements cells = aRow.getElementsByTag("td"); 
 			unGenericDTO.add("url", baseUri); 
 			unGenericDTO.add("number", cells.get(0).text()); 
-			unGenericDTO.add("dueDate", cells.get(1).text()); 
-			unGenericDTO.add("start", cells.get(1).text().substring(0, 10));
+			unGenericDTO.add("dueDate", cells.get(1).text());
+			unGenericDTO.add("start", getStartDate(cells.get(1).text()));
 			unGenericDTO.add("title", getTitle(baseUri));
 			
 			String datePosted = cells.get(2).text();
 			unGenericDTO.add("datePosted", datePosted);
+			if (investmentDto!=null){
+				unGenericDTO.add("investedAmount", investmentDto.get("amount"));
+				unGenericDTO.add("rate", investmentDto.get("rate"));
+				unGenericDTO.add("numPayments", rows.size()-1);
+			}
 			
 			String status = (datePosted!=null&&!datePosted.equals("- - -"))?"Paid":"Pending";
 			unGenericDTO.add("status", status);
@@ -61,5 +67,18 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 
 	}
 
-
+	private GenericDTO getInvestmentDto(Document doc, String userId) {
+		List<GenericDTO> investments = (List<GenericDTO>)new LoanInvestmentsAdapter("",doc).getGenericDto().get("investments");
+		for (GenericDTO anInvestment:investments){
+			if (anInvestment.get("userId").equals(userId)){
+				return anInvestment;
+			}
+		}
+		return null;
+	}
+	
+	private String getStartDate(String dueDate){
+		final String timezone = ":00-06:00";
+		return dueDate = dueDate.replaceFirst(" ", "T").replaceFirst(" CDT", timezone);
+	}
 }

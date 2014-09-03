@@ -11,7 +11,7 @@ public class UserAdapter extends GenericAdapter {
 	public final static String USER_PATH = "/users";
 	final String PAYMENTS_PATH = "/payments";
 	final String RATINGS_PATH = "/ratings";
-	final String SITE_USER_PATH = "/user/index/id/";
+	public final String SITE_USER_PATH = "/user/index/id/";
 
 	public UserAdapter(String url, Document doc, Map<String, Object> adapterMap) {
 		super(url, doc, adapterMap);
