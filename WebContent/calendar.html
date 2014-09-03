@@ -9,73 +9,8 @@
 <link rel="stylesheet" type="text/css" href="lib/jquery.dataTables.css">
 <script src='lib/jquery.dataTables.min.js'></script>
 <script src='lib/fullcalendar.min.js'></script>
-<script>
+<script src='lib/logic.js'></script>
 
-
-	function get(name){
-	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
-	      return decodeURIComponent(name[1]);
-	}
-	var userId = get('userId');
-	$(document).ready(function() {
-	
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: ''
-			},
-			editable: false,
-			ignoreTimezone:false,
-			timezone: 'local',
-			events: {
-				url: 'api/users/'+userId+'/receivables',
-				startParam: '',
-				endParam: '',
-				cache: true,
-				complete: function() {loadTable();},
-				error: function() {
-					$('#script-warning').show();
-				}
-			},
-			loading: function(bool) {
-				$('#loading').toggle(bool);
-			}
-			
-		});
-		
-	});
-
-function loadTable(){
-	$(document).ready(function() {
-	    $('#example').dataTable( {
-		"bFilter": false ,
-	    	"ajax" : {
-	    	    "url": 'api/users/'+userId+'/receivables',
-	    	    "cache": true,
-	    	    "dataSrc": ""
-	    	  },
-		"columns":
-		[
-			{ "data": function ( row, type, val, meta )
-				{ 
-					return new moment(row.start).format();
-				}
-				},
-			{ "data": "amount" },
-			{ "data": function ( row, type, val, meta )
-				{ 
-					return "<a href='"+row.url+"'>"+row.description+"</a>";
-				}
-
-			}
-		],
-		paging: false
-	    } );
-	} );
-}
-
-</script>
 <style>
 
 	body {
@@ -113,14 +48,24 @@ function loadTable(){
 </head>
 <body>
 
+<div id='wrapper'>
+
+<div id='left' style="float:left;width:10%">
+<input type="button" value="Calendar" class="calendarBtn"/>
+<input type="button" value="Table" class="tableBtn"/>
+<input type="button" value="BigLoans"/>
+</div>
+<div id='right' style="float:right;width:90%">
+
 	<div id='script-warning'>
 		json error
 	</div>
 
 	<div id='loading'>loading...</div>
+
 	<div id='calendar'></div>
-	<div id='table'>
-		<table id="example" class="display" cellspacing="0" width="100%">
+	<div class='tableDiv' style="display: none;">
+		<table id="recTable" class="display" cellspacing="0" width="100%">
 		<thead>
 		    <tr>
 		        <th>Date</th>
@@ -131,5 +76,17 @@ function loadTable(){
 	 
 		</table>
 	</div>
+</div>
+</div>
+
+<script>
+function get(name){
+	   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+	      return decodeURIComponent(name[1]);
+	}
+	var userId = get('userId');
+	$(document).ready(function() {init(userId)});
+
+</script>
 </body>
 </html>
