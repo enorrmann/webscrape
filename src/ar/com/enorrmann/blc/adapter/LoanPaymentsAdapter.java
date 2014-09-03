@@ -52,6 +52,7 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 			unGenericDTO.add("dueDate", cells.get(1).text());
 			unGenericDTO.add("start", getStartDate(cells.get(1).text()));
 			unGenericDTO.add("title", getTitle(eachPayment,baseUri));
+			unGenericDTO.add("description", getTitle("",baseUri));
 			unGenericDTO.add("amount", eachPayment);
 			
 			String datePosted = cells.get(2).text();

@@ -6,6 +6,8 @@
 <script src='lib/moment.min.js'></script>
 <script src='lib/jquery.min.js'></script>
 <script src='lib/jquery-ui.custom.min.js'></script>
+<link rel="stylesheet" type="text/css" href="lib/jquery.dataTables.css">
+<script src='lib/jquery.dataTables.min.js'></script>
 <script src='lib/fullcalendar.min.js'></script>
 <script>
 
@@ -31,6 +33,7 @@
 				startParam: '',
 				endParam: '',
 				cache: true,
+				complete: function() {loadTable();},
 				error: function() {
 					$('#script-warning').show();
 				}
@@ -38,9 +41,39 @@
 			loading: function(bool) {
 				$('#loading').toggle(bool);
 			}
+			
 		});
 		
 	});
+
+function loadTable(){
+	$(document).ready(function() {
+	    $('#example').dataTable( {
+		"bFilter": false ,
+	    	"ajax" : {
+	    	    "url": 'api/users/'+userId+'/receivables',
+	    	    "cache": true,
+	    	    "dataSrc": ""
+	    	  },
+		"columns":
+		[
+			{ "data": function ( row, type, val, meta )
+				{ 
+					return new moment(row.start).format();
+				}
+				},
+			{ "data": "amount" },
+			{ "data": function ( row, type, val, meta )
+				{ 
+					return "<a href='"+row.url+"'>"+row.description+"</a>";
+				}
+
+			}
+		],
+		paging: false
+	    } );
+	} );
+}
 
 </script>
 <style>
@@ -85,8 +118,18 @@
 	</div>
 
 	<div id='loading'>loading...</div>
-
 	<div id='calendar'></div>
-
+	<div id='table'>
+		<table id="example" class="display" cellspacing="0" width="100%">
+		<thead>
+		    <tr>
+		        <th>Date</th>
+		        <th>Amount</th>
+		        <th>Description</th>
+		    </tr>
+		</thead>
+	 
+		</table>
+	</div>
 </body>
 </html>

@@ -252,7 +252,7 @@ public class Logic {
 	public List<GenericDTO> getUserReceivables(Long userId){
 		List<GenericDTO> investments = getInvestmentsAll(userId);
 		keep(investments, "loanStatus","Funded");
-		List<GenericDTO> payments = getLoanPayments(investments);
+		List<GenericDTO> payments = getLoanPayments(investments,userId);
 		keep(payments, "status","Pending");
 		return payments;
 		
@@ -269,7 +269,7 @@ public class Logic {
 		}
 	}
 
-	public List<GenericDTO> getLoanPayments(List<GenericDTO> loans) {
+	public List<GenericDTO> getLoanPayments(List<GenericDTO> loans,Long userId) {
 		List<String> links = new ArrayList<String>();		
 		for (GenericDTO aLoan:loans){
 			links.add(HtmlAdapter.BLC_BASE_URL + aLoan.get("url"));
@@ -277,7 +277,7 @@ public class Logic {
 		List<Document> docs = getDocFromUrl(links.toArray(new String[0]));
 		List<GenericDTO> payments = new ArrayList<GenericDTO>(); 
 		for (Document aDocument:docs){
-			payments.addAll((List<GenericDTO>)getLoanPayments(aDocument));
+			payments.addAll((List<GenericDTO>)getLoanPayments(aDocument,userId));
 		}
 		return payments;
 
@@ -286,7 +286,7 @@ public class Logic {
 	public List<GenericDTO> getLoanPayments(Long loanId) {
 		final String url = "https://bitlendingclub.com/loan/browse/lid/"+ loanId;
 		Document doc = getDocFromUrl(url);
-		HtmlAdapter adapter = new LoanPaymentsAdapter(url, doc);
+		HtmlAdapter adapter = new LoanPaymentsAdapter(url, doc,null);
 		GenericDTO loanInvestmentsDto = adapter.getGenericDto();
 		List<GenericDTO> payments = (List<GenericDTO>) loanInvestmentsDto.get("payments");
 		if (payments == null) {
@@ -294,8 +294,8 @@ public class Logic {
 		}
 		return payments;
 	}
-	public List<GenericDTO> getLoanPayments(Document doc) {
-		HtmlAdapter adapter = new LoanPaymentsAdapter("", doc);
+	public List<GenericDTO> getLoanPayments(Document doc,Long userId) {
+		HtmlAdapter adapter = new LoanPaymentsAdapter("", doc,userId);
 		GenericDTO loanInvestmentsDto = adapter.getGenericDto();
 		List<GenericDTO> payments = (List<GenericDTO>) loanInvestmentsDto.get("payments");
 		if (payments == null) {
