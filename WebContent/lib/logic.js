@@ -1,4 +1,6 @@
 var userId=0;
+var tableLoaded = false;
+var bigLoansLoaded = false;
 
 function loadCalendar(userId){
 		$('#calendar').fullCalendar({
@@ -46,7 +48,7 @@ function loadCalendar(userId){
 		
 
 }
-var tableLoaded = false;
+
 function loadTable(userId){
 	tableLoaded = true;
     $('#recTable').dataTable( {
@@ -86,11 +88,35 @@ function loadTable(userId){
 	paging: false
     });
 }
+function loadBigLoans(){
+    $('#bigLoansTable').dataTable( {
+	paging: false,
+	searching: false,
+    	"ajax" : {
+    		"url": 'api/loans/big',
+    	    "cache": true,
+    	    "dataSrc": ""
+    	  },
+	"columns":
+	[
+		{ "data" : "user"},
+		{ "data": function ( row, type, val, meta )
+			{ 	
+				
+				return "<a href='"+row.links[1].href+"' target='_blank'>"+row.title+"</a>";
 
+			}
+
+		}
+	],
+	paging: false
+    });
+}
 function init(userId){
 	loadCalendar(userId);
 	$('.calendarBtn').click(function() {
 		$('.tableDiv').hide();
+		$('.bigLoansTableDiv').hide();
 		$('#calendar').show();
 	});
 	$('.tableBtn').click(function() {
@@ -98,7 +124,17 @@ function init(userId){
 			loadTable(userId);
 		}
 		$('#calendar').hide();
+		$('.bigLoansTableDiv').hide();
 		$('.tableDiv').show();
+	});
+	$('.bigLoansBtn').click(function() {
+		if (!bigLoansLoaded){
+			loadBigLoans();
+			bigLoansLoaded = true;
+		}
+		$('#calendar').hide();
+		$('.tableDiv').hide();
+		$('.bigLoansTableDiv').show();
 	});
 
 }

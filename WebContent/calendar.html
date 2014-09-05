@@ -1,7 +1,13 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
+
 <head>
-<meta charset='utf-8' />
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1"/>
+<meta name="description" content="description"/>
+<meta name="keywords" content="keywords"/> 
+<meta name="author" content="author"/> 
+<link rel="stylesheet" type="text/css" href="default.css" media="screen"/>
 <link href='lib/fullcalendar.css' rel='stylesheet' />
 <script src='lib/moment.min.js'></script>
 <script src='lib/jquery.min.js'></script>
@@ -11,57 +17,31 @@
 <script src='lib/fullcalendar.min.js'></script>
 <script src='lib/logic.js'></script>
 
-<style>
-
-	body {
-		margin: 0;
-		padding: 0;
-		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-		font-size: 14px;
-	}
-
-	#script-warning {
-		display: none;
-		background: #eee;
-		border-bottom: 1px solid #ddd;
-		padding: 0 10px;
-		line-height: 40px;
-		text-align: center;
-		font-weight: bold;
-		font-size: 12px;
-		color: red;
-	}
-
-	#loading {
-		display: none;
-		position: absolute;
-		top: 10px;
-		right: 10px;
-	}
-
-	#calendar {
-		width: 900px;
-		margin: 40px auto;
-	}
-
-</style>
+<title>Beautiful Day</title>
 </head>
+
 <body>
-
-<div id='wrapper'>
-
-<div id='left' style="float:left;width:10%">
-<input type="button" value="Calendar" class="calendarBtn"/>
-<input type="button" value="Table" class="tableBtn"/>
-<input type="button" value="BigLoans"/>
-</div>
-<div id='right' style="float:right;width:90%">
 
 	<div id='script-warning'>
 		json error
 	</div>
 
 	<div id='loading'>loading...</div>
+
+
+<div class="container">	
+
+<div id="centeredmenu">
+   <ul>
+	<li><a href="#" class="calendarBtn">Calendar</a></li>
+	<li><a href="#" class="tableBtn">Table</a></li>
+	<li><a href="#" class="bigLoansBtn">BigLoans</a></li>
+   </ul>
+</div>
+
+	<div class="main">		
+		
+		<div class="content">
 
 	<div id='calendar'></div>
 	<div class='tableDiv' style="display: none;">
@@ -77,8 +57,28 @@
 	 
 		</table>
 	</div>
-</div>
-</div>
+	<div class='bigLoansTableDiv' style="display: none;">
+		<table id="bigLoansTable" class="display" cellspacing="0" width="100%">
+		<thead>
+		    <tr>
+		        <th>User</th>
+		        <th>Description</th>
+		    </tr>
+		</thead>
+	 
+		</table>
+	</div>
+			
+
+		</div>
+
+
+		<div class="clearer"><span></span></div>
+
+	</div>
+
+	<div class="footer">INVITE ME A BEER ! 13V2GVVkCvtYF39JsYs95ZpfttU7s2TrGV</div>
+
 
 <script>
 function get(name){
@@ -90,4 +90,5 @@ function get(name){
 
 </script>
 </body>
+
 </html>
