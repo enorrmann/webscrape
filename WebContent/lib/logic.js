@@ -1,4 +1,5 @@
 var userId=0;
+
 function loadCalendar(userId){
 		$('#calendar').fullCalendar({
 			header: {
@@ -9,18 +10,37 @@ function loadCalendar(userId){
 			editable: false,
 			ignoreTimezone:false,
 			timezone: 'local',
-			events: {
-				url: 'api/users/'+userId+'/receivables',
-				startParam: '',
-				endParam: '',
-				cache: true,
-				error: function() {
-					$('#script-warning').show();
+			 eventSources: [
+				{
+					url: 'api/users/'+userId+'/receivables',
+					startParam: '',
+					endParam: '',
+					cache: true,
+					textColor: '#BDFFB6',
+					error: function() {$('#script-warning').show();}
+				},
+				{
+					url: 'api/users/'+userId+'/payables',
+					startParam: '',
+					endParam: '',
+					cache: true,
+					textColor: '#F5D0A9',
+					error: function() {$('#script-warning').show();}
 				}
-			},
+	            ],
+			
+			
 			loading: function(bool) {
 				$('#loading').toggle(bool);
-			}
+			},
+			eventRender: function(event, elt, view) {
+				var ntoday = new Date().getTime();
+				var eventStart = moment( event.start ).valueOf();
+			      if (eventStart < ntoday){
+			    	  elt.css('background-color','#FA5858');
+			      }
+			        
+			    },
 			
 		});
 		
@@ -33,7 +53,7 @@ function loadTable(userId){
 	paging: false,
 	searching: false,
     	"ajax" : {
-	"url": 'api/users/'+userId+'/receivables',
+	"url": 'api/users/'+userId+'/calendar',
     	    "cache": true,
     	    "dataSrc": ""
     	  },
@@ -43,11 +63,22 @@ function loadTable(userId){
 			{ 
 				return new moment(row.start).format();
 			}
-			},
-		{ "data": "amount" },
+		},
+		{ "data": "amount"},
 		{ "data": function ( row, type, val, meta )
 			{ 
+				if (row.amount == ""){
+					return '<span style="color:red">'+row.totalPayment+'</span>';
+				} else {
+					return "";
+				}
+			}
+		},
+		{ "data": function ( row, type, val, meta )
+			{ 	
+				
 				return "<a href='"+row.url+"'>"+row.description+"</a>";
+
 			}
 
 		}

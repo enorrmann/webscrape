@@ -15,9 +15,16 @@ public class LoanInvestmentsAdapter extends HtmlAdapter {
 	public LoanInvestmentsAdapter(String url, Document doc) {
 				super.genericDto.add("url", url);
 
-		Element investmentsTable = doc
-				.select("div.profile-content-right:nth-child(8) > table:nth-child(2) > tbody:nth-child(2)")
-				.first();
+
+				Elements disclaimer = doc.select(".disclaimer");
+				String investmentsQuery=null;
+				if (disclaimer.isEmpty()){
+					 investmentsQuery = "div.profile-content-right:nth-child(8) > table:nth-child(2) > tbody:nth-child(2)"; 
+				} else {
+					 investmentsQuery = "div.profile-content-right:nth-child(9) > table:nth-child(2) > tbody:nth-child(2)";
+				}
+				Element investmentsTable = doc.select(investmentsQuery).first();
+		
 		if (investmentsTable==null)return ; 
 		Elements rows = investmentsTable.getElementsByTag("tr"); 
 		List<GenericDTO> investments = getInvestments(rows);

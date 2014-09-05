@@ -8,23 +8,39 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class WebSource extends Thread {
 
-	final boolean USE_PROXY = false;
+	final static boolean USE_PROXY = false;
 	private String sourceCode;
 	private String url;
-	
+	static LoadingCache<String, String> cache;
+	static {
+		cache = CacheBuilder.newBuilder()
+				.expireAfterAccess(30, TimeUnit.MINUTES)
+				.build(
+						new CacheLoader<String, String>() {
+							public String load(String key) { 
+								return queryUrl(key);
+							}
+						});
+	}
 	public WebSource(String url){
 		this.url = url;
 	}
 
 	@Override
 	public void run() {
-		sourceCode = queryUrl(url);
+		//sourceCode = queryUrl(url);
+		sourceCode = cache.getUnchecked(url);
 	}
 
-	private String queryUrl(String url) {
+	private static String queryUrl(String url) {
 		URL website = null;
 		try {
 			website = new URL(url);

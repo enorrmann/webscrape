@@ -23,7 +23,7 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 		Elements rows = paymentsTable.getElementsByTag("tr"); 
 		
 		String eachPayment = "";
-		GenericDTO investmentDto = getInvestmentDto(doc,userId+"");
+		GenericDTO investmentDto = getInvestmentDto(doc,userId);
 		if (investmentDto!=null){
 			String investedAmount = (String)investmentDto.get("amount");
 			String rate = (String)investmentDto.get("rate");
@@ -50,9 +50,11 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 			unGenericDTO.add("url", baseUri); 
 			unGenericDTO.add("number", cells.get(0).text()); 
 			unGenericDTO.add("dueDate", cells.get(1).text());
+			String totalPayment = cells.get(5).text();
+			unGenericDTO.add("totalPayment", totalPayment);
 			unGenericDTO.add("start", getStartDate(cells.get(1).text()));
-			unGenericDTO.add("title", getTitle(eachPayment,baseUri));
-			unGenericDTO.add("description", getTitle("",baseUri));
+			unGenericDTO.add("title", getTitle(totalPayment,eachPayment,baseUri));
+			unGenericDTO.add("description", getTitle("","",baseUri));
 			unGenericDTO.add("amount", eachPayment);
 			
 			String datePosted = cells.get(2).text();
@@ -66,11 +68,13 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 		}
 		return investList;
 	}
-	private String getTitle(String eachPayment, String baseUri) {
+	private String getTitle(String totalPayment, String eachPayment, String baseUri) {
 		String title =  baseUri.substring(baseUri.lastIndexOf("/")+1);
 		title =  title.replaceAll("-", " " );
 		if (eachPayment!=null&&!eachPayment.trim().isEmpty()){
 			title = "("+eachPayment+") " + title;
+		}else if (totalPayment!=null&&!totalPayment.trim().isEmpty()){
+			title = "("+totalPayment+") " + title;
 		}
 		return title;
 	}
@@ -84,10 +88,12 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 
 	}
 
-	private GenericDTO getInvestmentDto(Document doc, String userId) {
+	private GenericDTO getInvestmentDto(Document doc, Long userId) {
+		if (userId==null)return null;
 		List<GenericDTO> investments = (List<GenericDTO>)new LoanInvestmentsAdapter("",doc).getGenericDto().get("investments");
+		if (investments==null)return null;
 		for (GenericDTO anInvestment:investments){
-			if (anInvestment.get("userId").equals(userId)){
+			if (anInvestment.get("userId").equals(userId+"")){
 				return anInvestment;
 			}
 		}

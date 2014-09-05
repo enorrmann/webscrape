@@ -20,6 +20,8 @@ public class Jsonifyer extends HttpServlet {
 	final String INVESTMENTS_PATH = "/investments";
 	final String RATINGS_PATH = "/ratings";
 	final String RECEIVABLES_PATH = "/receivables";
+	final String PAYABLES_PATH = "/payables";
+	final String CALENDAR_PATH = "/calendar";
 	final String BIG_PATH = "/big";
 
 	public Jsonifyer() {
@@ -68,8 +70,14 @@ public class Jsonifyer extends HttpServlet {
 		} else if (urlContainsPath(requestUrl, RECEIVABLES_PATH)) {
 			String json = logic.getUserReceivables(asLong(userid)).toString();
 			out.println(JsonWriter.formatJson(json));
+		} else if (urlContainsPath(requestUrl, PAYABLES_PATH)) {
+			String json = logic.getUserPendingPayments(asLong(userid)).toString();
+			out.println(JsonWriter.formatJson(json));
+		} else if (urlContainsPath(requestUrl, CALENDAR_PATH)) {
+			String json = logic.getFullCalendar(asLong(userid)).toString();
+			out.println(JsonWriter.formatJson(json));
 		} else if (urlContainsPath(requestUrl, LOANS_PATH)) {
-			String json = logic.getUserLoans(asLong(userid), pageNumber).toString();
+			String json = logic.getFundedLoans(asLong(userid)).toString();
 			out.println(JsonWriter.formatJson(json));
 		} else{
 			String json = logic.getUser(asLong(userid)).toString();

@@ -5,8 +5,8 @@
            maxEntriesLocalDisk="1000"
            eternal="false"
            overflowToDisk="true"
-           timeToIdleSeconds="300"
-           timeToLiveSeconds="300"
+           timeToIdleSeconds="900"
+           timeToLiveSeconds="900"
            memoryStoreEvictionPolicy="LFU"
             />
 </ehcache>

@@ -51,6 +51,12 @@ public class Logic {
 		return page1;
 	}
 
+	public GenericDTO getUserLoansPage(Document doc) {
+		HtmlAdapter adapter = new UserLoansAdapter("", doc);
+		GenericDTO page1 = adapter.getGenericDto();
+		return page1;
+	}
+
 	public GenericDTO getInvestmentPage(Long userId, Long pageNum) {
 		if (userId == null) {
 			return getErrorDto("user id required");
@@ -68,6 +74,33 @@ public class Logic {
 		return page1;
 	}
 	
+	public List<GenericDTO> getFullCalendar(final Long userId) {
+		final List<GenericDTO> calendar = new ArrayList<GenericDTO>();
+		final List<GenericDTO> receivables = new ArrayList<GenericDTO>();
+		final List<GenericDTO> payables = new ArrayList<GenericDTO>();
+		
+		Thread t1 = new Thread() {
+		    public void run() {
+		    	receivables.addAll(getUserReceivables(userId));
+		    }
+		};
+		t1.start();
+		Thread t2 = new Thread() {
+		    public void run() {
+		    	payables.addAll(getUserPendingPayments(userId));
+		    }
+		};
+		t2.start();
+		try {
+			t1.join();
+			t2.join();
+			calendar.addAll(receivables);
+			calendar.addAll(payables);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return calendar;
+	}
 	public List<GenericDTO> getInvestmentsAll(Long userId) {
 		List<GenericDTO> dtoList = new ArrayList<GenericDTO>();
 		if (userId == null) {
@@ -143,6 +176,35 @@ public class Logic {
 		return dtoList;
 
 	}
+	public List<GenericDTO> getFundedLoans(Long userId) {
+		List<GenericDTO> dtoList = new ArrayList<GenericDTO>();
+		String baseUrl = "https://bitlendingclub.com/user/get-loans-ajax/id/";
+		// all false, 2 true: funded (active) loans
+		String filter = "/1/false/2/true/3/false/4/false/5/false/6/false";
+		String page1Url = baseUrl + userId + "/page/1"+filter;
+		Document doc = getDocFromUrl(page1Url);
+		HtmlAdapter adapter = new UserLoansAdapter(page1Url, doc);
+		GenericDTO page1 = adapter.getGenericDto();
+		
+		
+		int pageCount = (Integer) page1.get("pageCount");
+		dtoList = (List<GenericDTO>)page1.get("loans");
+		
+		List<String> links = new ArrayList<String>();		
+		for (int i=2;i<=pageCount;i++){
+			String pageUrl = baseUrl + userId + "/page/"+i+filter;
+			links.add(pageUrl);
+		}
+		List<Document> docs = getDocFromUrl(links.toArray(new String[0]));
+		for (Document aDocument:docs){
+			dtoList.addAll((List<GenericDTO>)getUserLoansPage(aDocument).get("loans"));
+		}
+		return dtoList;
+		
+		
+		
+		
+	}
 	public GenericDTO getUserLoans(Long userId, Long pageNum) {
 		if (userId == null) {
 			return getErrorDto("user id required");
@@ -160,7 +222,6 @@ public class Logic {
 		// int pageCount = (Integer) page1.get("pageCount");
 
 		return page1;
-
 	}
 
 	private List<String> getInvestLinks(List<GenericDTO> pages) {
@@ -253,6 +314,14 @@ public class Logic {
 		List<GenericDTO> investments = getInvestmentsAll(userId);
 		keep(investments, "loanStatus","Funded");
 		List<GenericDTO> payments = getLoanPayments(investments,userId);
+		keep(payments, "status","Pending");
+		return payments;
+		
+	}
+
+	public List<GenericDTO> getUserPendingPayments(Long userId){
+		List<GenericDTO> fundedLoans = getFundedLoans(userId);
+		List<GenericDTO> payments = getLoanPayments(fundedLoans,null);
 		keep(payments, "status","Pending");
 		return payments;
 		
