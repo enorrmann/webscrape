@@ -79,7 +79,7 @@ function loadTable(userId){
 		{ "data": function ( row, type, val, meta )
 			{ 	
 				
-				return "<a href='"+row.url+"'>"+row.description+"</a>";
+				return "<a href='"+row.url+"' target='_blank' >"+row.description+"</a>";
 
 			}
 
@@ -100,6 +100,7 @@ function loadBigLoans(){
 	"columns":
 	[
 		{ "data" : "user"},
+		{ "data" : "percentFunded"},
 		{ "data": function ( row, type, val, meta )
 			{ 	
 				

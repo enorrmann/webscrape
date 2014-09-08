@@ -143,7 +143,7 @@ public class Logic {
 		while (it.hasNext()){
 			GenericDTO aLoan = it.next();
 			String user = (String)aLoan.get("user");
-			if (!bigBoysMap.containsKey(user)){
+			if (!bigBoysMap.containsKey(user.toLowerCase())){
 				it.remove();
 			}
 		}
