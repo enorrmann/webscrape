@@ -34,13 +34,15 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 			investmentDto.add("numPayments", numPayments);
 			investmentDto.add("eachPayment",eachPayment);
 		}
+		Element userName = doc.select(".user-name").first();
+		
 
-		List<GenericDTO> payments = getPayments(rows,doc.baseUri(),eachPayment);
+		List<GenericDTO> payments = getPayments(rows,doc.baseUri(),eachPayment,userName.text());
 		genericDto.add("payments", payments);
 
 	}
 
-	private List<GenericDTO> getPayments(Elements rows,String baseUri,String eachPayment) {
+	private List<GenericDTO> getPayments(Elements rows,String baseUri,String eachPayment,String userName) {
 		List<GenericDTO> investList = new ArrayList<GenericDTO>();
 		// last value is just a sum
 		for (int i=0;i<rows.size()-1;i++){
@@ -56,6 +58,7 @@ public class LoanPaymentsAdapter extends HtmlAdapter {
 			unGenericDTO.add("title", getTitle(totalPayment,eachPayment,baseUri));
 			unGenericDTO.add("description", getTitle("","",baseUri));
 			unGenericDTO.add("amount", eachPayment);
+			unGenericDTO.add("user", userName);
 			
 			String datePosted = cells.get(2).text();
 			unGenericDTO.add("datePosted", datePosted);

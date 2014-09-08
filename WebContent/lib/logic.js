@@ -76,6 +76,7 @@ function loadTable(userId){
 				}
 			}
 		},
+		{ "data": "user"},
 		{ "data": function ( row, type, val, meta )
 			{ 	
 				

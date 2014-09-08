@@ -6,5 +6,6 @@
 	"listingDate" : "div.row-loan-specs:nth-child(5) > div:nth-child(1) > div:nth-child(2)",
 	"paymentStatus" : "div.row-loan-specs:nth-child(6) > div:nth-child(1) > div:nth-child(2)",
 	"description" : "div.profile-content-right:nth-child(7) > div:nth-child(2)",
-	"loanType" : ".subtitle > strong:nth-child(1)"
+	"loanType" : ".subtitle > strong:nth-child(1)",
+	"user" : ".user-name"
 }
