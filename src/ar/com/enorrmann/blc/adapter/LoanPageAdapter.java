@@ -32,7 +32,7 @@ public class LoanPageAdapter extends HtmlAdapter {
 			String description = cells.get(1).text();
 			String title = loanLink.attr("title");
 			unGenericDTO.add("user", cells.get(0).text()); 
-			unGenericDTO.add("description", description.substring(title.length())); 
+			unGenericDTO.add("description", title); 
 			unGenericDTO.add("type", cells.get(2).text()); 
 			unGenericDTO.add("percentFunded", cells.get(4).text()); 
 			unGenericDTO.add("timeLeft", cells.get(6).text()); 
