@@ -27,6 +27,8 @@ import com.cedarsoftware.util.io.JsonReader;
 public class Logic {
 	
 	private Map<String,String> bigBoysMap;
+	private final String BLC_BASE = "http://54.200.106.135";
+	
 	
 	public Logic(){
 		bigBoysMap = getConversionMap("ar/com/enorrmann/blc/adapter/BigBoys.json"); 
@@ -65,7 +67,7 @@ public class Logic {
 			return getErrorDto("parameter pageNum required");
 		}
 		Long pageNumber = pageNum != null ? pageNum : 1L;
-		final String baseUrl = "https://bitlendingclub.com/user/get-investments-ajax/id/";
+		final String baseUrl = BLC_BASE+"/user/get-investments-ajax/id/";
 		String page1Url = baseUrl + userId + "/page/" + pageNumber;
 		Document doc = getDocFromUrl(page1Url);
 		HtmlAdapter adapter = new UserInvestmentsAdapter(page1Url, doc);
@@ -108,7 +110,7 @@ public class Logic {
 			return dtoList;
 		}
 		int pageNumber = 1;
-		final String baseUrl = "https://bitlendingclub.com/user/get-investments-ajax/id/"+ userId + "/page/";
+		final String baseUrl = BLC_BASE+"/user/get-investments-ajax/id/"+ userId + "/page/";
 		
 		String page1Url = baseUrl + pageNumber;
 		Document doc = getDocFromUrl(page1Url);
@@ -152,7 +154,7 @@ public class Logic {
 	public List<GenericDTO> getLoansAll() {
 		List<GenericDTO> dtoList = new ArrayList<GenericDTO>();
 		int pageNumber = 1;
-		final String baseUrl = "https://bitlendingclub.com/loan/index/page/";
+		final String baseUrl = BLC_BASE+"/loan/index/page/";
 		
 		String page1Url = baseUrl + pageNumber;
 		Document doc = getDocFromUrl(page1Url);
@@ -178,7 +180,7 @@ public class Logic {
 	}
 	public List<GenericDTO> getFundedLoans(Long userId) {
 		List<GenericDTO> dtoList = new ArrayList<GenericDTO>();
-		String baseUrl = "https://bitlendingclub.com/user/get-loans-ajax/id/";
+		String baseUrl = BLC_BASE+"/user/get-loans-ajax/id/";
 		// all false, 2 true: funded (active) loans
 		String filter = "/1/false/2/true/3/false/4/false/5/false/6/false";
 		String page1Url = baseUrl + userId + "/page/1"+filter;
@@ -213,7 +215,7 @@ public class Logic {
 			return getErrorDto("parameter pageNum required");
 		}
 
-		String baseUrl = "https://bitlendingclub.com/user/get-loans-ajax/id/";
+		String baseUrl = BLC_BASE+"/user/get-loans-ajax/id/";
 		String page1Url = baseUrl + userId + "/page/"+pageNum+"/1/true/2/true/3/true/4/true/5/true/6/true";
 		Document doc = getDocFromUrl(page1Url);
 		HtmlAdapter adapter = new UserLoansAdapter(page1Url, doc);
@@ -225,7 +227,7 @@ public class Logic {
 	}
 
 	private List<String> getInvestLinks(List<GenericDTO> pages) {
-		final String BASE_URL = "https://bitlendingclub.com";
+		final String BASE_URL = BLC_BASE+"";
 		List<String> linkList = new ArrayList<String>();
 		for (GenericDTO aPage : pages) {
 			List<GenericDTO> aPageLinks = (List<GenericDTO>) aPage
@@ -268,7 +270,7 @@ public class Logic {
 		if (loanId == null) {
 			return getErrorDto("loan id required");
 		}
-		final String url = "https://bitlendingclub.com/loan/browse/lid/" + loanId;
+		final String url = BLC_BASE+"/loan/browse/lid/" + loanId;
 		Document doc = getDocFromUrl(url);
 
 		Map map = getConversionMap("ar/com/enorrmann/blc/adapter/LoanAdapter.json");
@@ -298,7 +300,7 @@ public class Logic {
 	}
 
 	public List<GenericDTO> getLoanInvestments(Long loanId) {
-		final String url = "https://bitlendingclub.com/loan/browse/lid/"+ loanId;
+		final String url = BLC_BASE+"/loan/browse/lid/"+ loanId;
 		Document doc = getDocFromUrl(url);
 		HtmlAdapter adapter = new LoanInvestmentsAdapter(url, doc);
 		GenericDTO loanInvestmentsDto = adapter.getGenericDto();
@@ -353,7 +355,7 @@ public class Logic {
 		
 	}
 	public List<GenericDTO> getLoanPayments(Long loanId) {
-		final String url = "https://bitlendingclub.com/loan/browse/lid/"+ loanId;
+		final String url = BLC_BASE+"/loan/browse/lid/"+ loanId;
 		Document doc = getDocFromUrl(url);
 		HtmlAdapter adapter = new LoanPaymentsAdapter(url, doc,null);
 		GenericDTO loanInvestmentsDto = adapter.getGenericDto();
@@ -377,7 +379,7 @@ public class Logic {
 		if (userId == null) {
 			return getErrorDto("user id required");
 		}
-		final String url = "https://bitlendingclub.com/user/index/id/" + userId;
+		final String url = BLC_BASE+"/user/index/id/" + userId;
 
 		Map map = getConversionMap("ar/com/enorrmann/blc/adapter/UserAdapter.json");
 
