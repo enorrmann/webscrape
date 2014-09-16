@@ -16,7 +16,7 @@ import com.google.common.cache.LoadingCache;
 
 public class WebSource extends Thread {
 
-	final static boolean USE_PROXY = true;
+	final static boolean USE_PROXY = false;
 	private String sourceCode;
 	private String url;
 	static LoadingCache<String, String> cache;
