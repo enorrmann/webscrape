@@ -27,7 +27,6 @@ import com.cedarsoftware.util.io.JsonReader;
 public class Logic {
 	
 	private Map<String,String> bigBoysMap;
-	//private final String BLC_BASE = "http://54.200.106.135";
 	private final String BLC_BASE = "http://bitlendingclub.com";
 	
 	
