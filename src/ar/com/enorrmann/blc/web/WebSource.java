@@ -22,7 +22,7 @@ public class WebSource extends Thread {
 	static LoadingCache<String, String> cache;
 	static {
 		cache = CacheBuilder.newBuilder()
-				.expireAfterAccess(30, TimeUnit.MINUTES)
+				.expireAfterWrite(30, TimeUnit.MINUTES)
 				.build(
 						new CacheLoader<String, String>() {
 							public String load(String key) { 

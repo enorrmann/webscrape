@@ -4,7 +4,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public abstract class HtmlAdapter {
-	public static final String BLC_BASE_URL = "http://bitlendingclub.com";
+	public static final String BLC_BASE_URL = "https://bitlendingclub.com";
 	protected GenericDTO genericDto = new GenericDTO();
 
 	protected String getFirstMatchingvalue(Document doc, String selector) {
