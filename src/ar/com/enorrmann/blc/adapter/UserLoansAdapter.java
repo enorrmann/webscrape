@@ -39,7 +39,7 @@ public class UserLoansAdapter extends HtmlAdapter {
 			unGenericDTO.add("percentFunded", cells.get(2).text());
 			unGenericDTO.add("term", cells.get(3).text());
 			//unGenericDTO.add("investors", cells.get(4).text());
-			unGenericDTO.add("loanStatus", cells.get(3).text());
+			unGenericDTO.add("loanStatus", cells.get(5).text());
 			unGenericDTO.add("title", loanLink.attr("title"));
 			unGenericDTO.add("url", loanLink.attr("href"));
 			unGenericDTO.add("link", getApiLink(loanLink.attr("href")));
