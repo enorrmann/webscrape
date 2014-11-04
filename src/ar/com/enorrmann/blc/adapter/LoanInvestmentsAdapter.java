@@ -19,9 +19,9 @@ public class LoanInvestmentsAdapter extends HtmlAdapter {
 				Elements disclaimer = doc.select(".disclaimer");
 				String investmentsQuery=null;
 				if (disclaimer.isEmpty()){
-					 investmentsQuery = "div.profile-content-right:nth-child(8) > table:nth-child(2) > tbody:nth-child(2)"; 
+					 investmentsQuery = "div.profile-content-right:nth-child(9) > table:nth-child(2) > tbody:nth-child(2)"; 
 				} else {
-					 investmentsQuery = "div.profile-content-right:nth-child(9) > table:nth-child(2) > tbody:nth-child(2)";
+					 investmentsQuery = "div.profile-content-right:nth-child(10) > table:nth-child(2) > tbody:nth-child(2)";
 				}
 				Element investmentsTable = doc.select(investmentsQuery).first();
 		
